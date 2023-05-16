@@ -18,20 +18,10 @@ ul {
   padding: 3px;
   list-style: none;
 }
-label {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  text-align: right;
-  width: 100px;
-  line-height: 25px;
-  margin-bottom: 5px;
-}
 
-select {
-  height: 25px;
-  flex: 0 0 400px;
-  margin-left: 10px;
+.container {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
 }
 
 </style>
@@ -42,6 +32,7 @@ select {
   <h1>Wallabies 2023 RWC Squad Selection</h1>
 </div>
 
+<div class="container">
 <p>Starting XV</p>
     <ul>
         <li>
@@ -287,6 +278,7 @@ select {
             </label>
         </li>
       </ul>   
+</div>
 <p>Bench</p>
     <ul>
         <li>
