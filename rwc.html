@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* {
+  box-sizing: border-box;
+}
+body {
+  background-color: white;
+}
+
+.header, .footer {
+  background-color: gold;
+  color: green;
+  padding: 15px;
+}
+
+ul {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Wallabies 2023 RWC Squad Selection</h1>
+</div>
+
+<p>Starting XV</p>
+    <ul>
+      <li>1.</li>
+      <li>2.</li>
+      <li>3.</li>
+      <li>4.</li>
+      <li>5.</li>
+      <li>6.</li>
+      <li>7.</li>
+      <li>8.</li>
+      <li>9.</li>
+      <li>10.</li>
+      <li>11.</li>
+      <li>12.</li>
+      <li>13.</li>
+      <li>14.</li>
+      <li>15.</li>
+    </ul>
+
+    <ul>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a loosehead prop</option> 
+                <option value='1'>Angus Bell</option> 
+                <option value='2'>Blake Schoupp</option> 
+                <option value='3'>James Slipper</option> 
+                <option value='4'>Matt Gibbon</option> 
+                <option value='5'>Scott Sio</option>
+                <option value='6'>Tom Robertson</option>
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a hooker</option> 
+                <option value='1'>Alex Mafi</option> 
+                <option value='2'>Billy Pollard</option> 
+                <option value='3'>Brandon Paenga-Amosa</option> 
+                <option value='4'>Dave Porecki</option> 
+                <option value='5'>Folau Fainga'a</option> 
+                <option value='6'>Jordan Uelese</option> 
+                <option value='7'>Lachlan Lonergan</option> 
+                <option value='8'>Matt Faessler</option> 
+                <option value='9'>Tolu Latu</option>
+                <option value='10'>Josh Nasser</option>  
+                <option value='11'>Connal McInerney</option>
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a tighthead prop</option> 
+                <option value='1'>Allan Alaalatoa</option> 
+                <option value='2'>Harry Johnson-Holmes</option> 
+                <option value='3'>Pone Fa'amausili</option> 
+                <option value='4'>Rhys Van Nek</option> 
+                <option value='5'>Sam Talakai</option>
+                <option value='6'>Taniela Tupou</option>
+                <option value='7'>Tom Robertson</option>
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a lock</option> 
+                <option value='1'>Cadeyrn Neville</option> 
+                <option value='2'>Darcy Swain</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Matt Philip</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Richie Arnold</option> 
+                <option value='9'>Rory Arnold</option>
+                <option value='10'>Ryan Smith</option>
+                <option value='11'>Trevor Hosea</option>
+                <option value='12'>Will Skelton</option>
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option>
+            </select>            
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a lock</option> 
+                <option value='1'>Cadeyrn Neville</option> 
+                <option value='2'>Darcy Swain</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Matt Philip</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Richie Arnold</option> 
+                <option value='9'>Rory Arnold</option>
+                <option value='10'>Ryan Smith</option>
+                <option value='11'>Trevor Hosea</option>
+                <option value='12'>Will Skelton</option>
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option>
+            </select>            
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a blindside flanker</option> 
+                <option value='1'>Charlie Gamble</option> 
+                <option value='2'>Harry Wilson</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Lachie Swinton</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Rob Leota</option> 
+                <option value='9'>Pete Samu</option>
+                <option value='10'>Rob Valetini</option>
+                <option value='11'>Liam Wright</option>
+                <option value='12'>Rory Scott</option>
+                <option value='13'>Seru Uru</option> 
+                <option value='14'>Tom Hooper</option>            
+                <option value='15'>Langi Gleeson</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select an openside flanker</option> 
+                <option value='1'>Charlie Gamble</option> 
+                <option value='2'>Brad Wilkin</option> 
+                <option value='3'>Fraser McReight</option> 
+                <option value='4'>Liam Wright</option> 
+                <option value='5'>Michael Hooper</option> 
+                <option value='6'>Pete Samu</option> 
+                <option value='7'>Rory Scott</option>            
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a no. 8</option> 
+                <option value='1'>Charlie Gamble</option> 
+                <option value='2'>Harry Wilson</option> 
+                <option value='3'>Langi Gleeson</option> 
+                <option value='4'>Tom Hooper</option> 
+                <option value='5'>Pete Samu</option> 
+                <option value='6'>Rob Valetini</option>            
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a scrumhalf</option> 
+                <option value='1'>Jake Gordon</option> 
+                <option value='2'>Nic White</option> 
+                <option value='3'>Ryan Lonergan</option> 
+                <option value='4'>Tate McDermott</option>      
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a flyhalf</option> 
+                <option value='1'>Ben Donaldson</option> 
+                <option value='2'>Bernard Foley</option> 
+                <option value='3'>Carter Gordon</option> 
+                <option value='4'>Jack Debreczeni</option> 
+                <option value='5'>James O'Connor</option> 
+                <option value='6'>Lawson Creighton</option>            
+                <option value='7'>Noah Lolesio</option> 
+                <option value='8'>Quade Cooper</option> 
+                <option value='9'>Tane Edmed</option>
+                <option value='10'>Tom Lynagh</option>
+                <option value='11'>Reece Hodge</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a left wing</option> 
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select an inside centre</option> 
+                <option value='1'>Hamish Stewart</option> 
+                <option value='2'>Hunter Paisami</option> 
+                <option value='3'>Irae Simone</option> 
+                <option value='4'>James O'Connor</option> 
+                <option value='5'>Lalakai Foketi</option>            
+                <option value='6'>Reece Hodge</option> 
+                <option value='7'>Samu Kerevi</option>  
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select an outside centre</option> 
+                <option value='1'>Hunter Paisami</option> 
+                <option value='2'>Izaia Perese</option> 
+                <option value='3'>Josh Flook</option> 
+                <option value='4'>Jordan Petaia</option> 
+                <option value='5'>Len Ikitau</option> 
+                <option value='6'>Samu Kerevi</option>            
+                <option value='7'>Reece Hodge</option> 
+                <option value='8'>Andrew Kellaway</option> 
+                <option value='9'>Lalakai Foketi</option>
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a right wing</option> 
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option>
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a fullback</option> 
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Jock Campbell</option> 
+                <option value='3'>Jordan Petaia</option> 
+                <option value='4'>Max Jorgensen</option> 
+                <option value='5'>Tom Banks</option> 
+                <option value='6'>Tom Wright</option>            
+                <option value='7'>Reece Hodge</option> 
+            </select>
+        </li>
+      </ul>   
+<p>Bench</p>
+    <ul>
+        <li>16.</li>
+        <li>17.</li>
+        <li>18.</li>
+        <li>19.</li>
+        <li>20.</li>
+        <li>21.</li>
+        <li>22.</li>
+        <li>23.</li>
+    </ul>
+    <ul>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a bench hooker</option>  
+                <option value='1'>Alex Mafi</option> 
+                <option value='2'>Billy Pollard</option> 
+                <option value='3'>Brandon Paenga-Amosa</option> 
+                <option value='4'>Dave Porecki</option> 
+                <option value='5'>Folau Fainga'a</option> 
+                <option value='6'>Jordan Uelese</option> 
+                <option value='7'>Lachlan Lonergan</option> 
+                <option value='8'>Matt Faessler</option> 
+                <option value='9'>Tolu Latu</option>
+                <option value='10'>Josh Nasser</option>  
+                <option value='11'>Connal McInerney</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a bench loosehead prop</option> 
+                <option value='1'>Angus Bell</option> 
+                <option value='2'>Blake Schoupp</option> 
+                <option value='3'>James Slipper</option> 
+                <option value='4'>Matt Gibbon</option> 
+                <option value='5'>Scott Sio</option>
+                <option value='6'>Tom Robertson</option> 
+            </select>
+        </li>
+        <li>    
+            <select name='select' id='select'> 
+                <option value=''>Select a bench tighthead prop</option> 
+                <option value='1'>Allan Alaalatoa</option> 
+                <option value='2'>Harry Johnson-Holmes</option> 
+                <option value='3'>Pone Fa'amausili</option> 
+                <option value='4'>Rhys Van Nek</option> 
+                <option value='5'>Sam Talakai</option>
+                <option value='6'>Taniela Tupou</option>
+                <option value='7'>Tom Robertson</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a bench lock</option> 
+                <option value='1'>Cadeyrn Neville</option> 
+                <option value='2'>Darcy Swain</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Matt Philip</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Richie Arnold</option> 
+                <option value='9'>Rory Arnold</option>
+                <option value='10'>Ryan Smith</option>
+                <option value='11'>Trevor Hosea</option>
+                <option value='12'>Will Skelton</option>
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a bench lock/loose forward</option> 
+                <option value='1'>Cadeyrn Neville</option> 
+                <option value='2'>Darcy Swain</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Matt Philip</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Richie Arnold</option> 
+                <option value='9'>Rory Arnold</option>
+                <option value='10'>Ryan Smith</option>
+                <option value='11'>Trevor Hosea</option>
+                <option value='12'>Will Skelton</option>
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option>
+                <option value='15'>Charlie Gamble</option> 
+                <option value='16'>Harry Wilson</option> 
+                <option value='17'>Lachie Swinton</option> 
+                <option value='19'>Pete Samu</option>
+                <option value='20'>Rob Valetini</option>
+                <option value='21'>Liam Wright</option>
+                <option value='22'>Rory Scott</option>
+                <option value='23'>Tom Hooper</option>            
+                <option value='24'>Langi Gleeson</option> 
+                <option value='25'>Brad Wilkin</option> 
+                <option value='26'>Fraser McReight</option> 
+                <option value='28'>Michael Hooper</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a bench loose forward or scrumhalf</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option>  
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option>
+                <option value='15'>Charlie Gamble</option> 
+                <option value='16'>Harry Wilson</option> 
+                <option value='17'>Lachie Swinton</option> 
+                <option value='19'>Pete Samu</option>
+                <option value='20'>Rob Valetini</option>
+                <option value='21'>Liam Wright</option>
+                <option value='22'>Rory Scott</option>
+                <option value='23'>Tom Hooper</option>            
+                <option value='24'>Langi Gleeson</option> 
+                <option value='25'>Brad Wilkin</option> 
+                <option value='26'>Fraser McReight</option> 
+                <option value='28'>Michael Hooper</option> 
+                <option value='1'>Jake Gordon</option> 
+                <option value='2'>Nic White</option> 
+                <option value='3'>Ryan Lonergan</option> 
+                <option value='4'>Tate McDermott</option>
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a bench back</option> 
+                <option value='1'>Jake Gordon</option> 
+                <option value='2'>Nic White</option> 
+                <option value='3'>Ryan Lonergan</option> 
+                <option value='4'>Tate McDermott</option>
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option>
+                <option value='1'>Hunter Paisami</option> 
+                <option value='5'>Len Ikitau</option> 
+                <option value='6'>Samu Kerevi</option>            
+                <option value='7'>Reece Hodge</option>
+                <option value='1'>Hamish Stewart</option>  
+                <option value='3'>Irae Simone</option> 
+                <option value='4'>James O'Connor</option> 
+                <option value='5'>Lalakai Foketi</option>
+                <option value='1'>Ben Donaldson</option> 
+                <option value='2'>Bernard Foley</option> 
+                <option value='3'>Carter Gordon</option> 
+                <option value='4'>Jack Debreczeni</option> 
+                <option value='5'>James O'Connor</option> 
+                <option value='6'>Lawson Creighton</option>            
+                <option value='7'>Noah Lolesio</option> 
+                <option value='8'>Quade Cooper</option> 
+                <option value='9'>Tane Edmed</option>
+                <option value='10'>Tom Lynagh</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a bench back</option> 
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option>
+                <option value='1'>Hunter Paisami</option> 
+                <option value='5'>Len Ikitau</option> 
+                <option value='6'>Samu Kerevi</option>            
+                <option value='7'>Reece Hodge</option>
+                <option value='1'>Hamish Stewart</option>  
+                <option value='3'>Irae Simone</option> 
+                <option value='4'>James O'Connor</option> 
+                <option value='5'>Lalakai Foketi</option>
+                <option value='1'>Ben Donaldson</option> 
+                <option value='2'>Bernard Foley</option> 
+                <option value='3'>Carter Gordon</option> 
+                <option value='4'>Jack Debreczeni</option> 
+                <option value='5'>James O'Connor</option> 
+                <option value='6'>Lawson Creighton</option>            
+                <option value='7'>Noah Lolesio</option> 
+                <option value='8'>Quade Cooper</option> 
+                <option value='9'>Tane Edmed</option>
+                <option value='10'>Tom Lynagh</option>
+            </select>
+        </li>
+    </ul>
+
+<p>Squad</p>
+    <ul>
+        <li>24.</li>
+        <li>25.</li>
+        <li>26.</li>
+        <li>27.</li>
+        <li>28.</li>
+        <li>29.</li>
+        <li>30.</li>
+        <li>31.</li>
+        <li>32.</li>
+        <li>33.</li>
+    </ul>
+
+    <ul>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad hooker</option> 
+                <option value='1'>Alex Mafi</option> 
+                <option value='2'>Billy Pollard</option> 
+                <option value='3'>Brandon Paenga-Amosa</option> 
+                <option value='4'>Dave Porecki</option> 
+                <option value='5'>Folau Fainga'a</option> 
+                <option value='6'>Jordan Uelese</option> 
+                <option value='7'>Lachlan Lonergan</option> 
+                <option value='8'>Matt Faessler</option> 
+                <option value='9'>Tolu Latu</option>
+                <option value='10'>Josh Nasser</option>  
+                <option value='11'>Connal McInerney</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad loosehead prop</option>
+                <option value='1'>Angus Bell</option> 
+                <option value='2'>Blake Schoupp</option> 
+                <option value='3'>James Slipper</option> 
+                <option value='4'>Matt Gibbon</option> 
+                <option value='5'>Scott Sio</option>
+                <option value='6'>Tom Robertson</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad tighthead prop</option> 
+                <option value='1'>Allan Alaalatoa</option> 
+                <option value='2'>Harry Johnson-Holmes</option> 
+                <option value='3'>Pone Fa'amausili</option> 
+                <option value='4'>Rhys Van Nek</option> 
+                <option value='5'>Sam Talakai</option>
+                <option value='6'>Taniela Tupou</option>
+                <option value='7'>Tom Robertson</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad lock</option>  
+                <option value='1'>Cadeyrn Neville</option> 
+                <option value='2'>Darcy Swain</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Matt Philip</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Richie Arnold</option> 
+                <option value='9'>Rory Arnold</option>
+                <option value='10'>Ryan Smith</option>
+                <option value='11'>Trevor Hosea</option>
+                <option value='12'>Will Skelton</option>
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad forward</option> 
+                <option value='1'>Alex Mafi</option> 
+                <option value='2'>Billy Pollard</option> 
+                <option value='3'>Brandon Paenga-Amosa</option> 
+                <option value='4'>Dave Porecki</option> 
+                <option value='5'>Folau Fainga'a</option> 
+                <option value='6'>Jordan Uelese</option> 
+                <option value='7'>Lachlan Lonergan</option> 
+                <option value='8'>Matt Faessler</option> 
+                <option value='9'>Tolu Latu</option>
+                <option value='10'>Josh Nasser</option>  
+                <option value='11'>Connal McInerney</option>
+                <option value='1'>Angus Bell</option> 
+                <option value='2'>Blake Schoupp</option> 
+                <option value='3'>James Slipper</option> 
+                <option value='4'>Matt Gibbon</option> 
+                <option value='5'>Scott Sio</option>
+                <option value='6'>Tom Robertson</option>
+                <option value='1'>Allan Alaalatoa</option> 
+                <option value='2'>Harry Johnson-Holmes</option> 
+                <option value='3'>Pone Fa'amausili</option> 
+                <option value='4'>Rhys Van Nek</option> 
+                <option value='5'>Sam Talakai</option>
+                <option value='6'>Taniela Tupou</option>
+                <option value='7'>Tom Robertson</option>
+                <option value='1'>Cadeyrn Neville</option> 
+                <option value='2'>Darcy Swain</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Matt Philip</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Richie Arnold</option> 
+                <option value='9'>Rory Arnold</option>
+                <option value='10'>Ryan Smith</option>
+                <option value='11'>Trevor Hosea</option>
+                <option value='12'>Will Skelton</option>
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option>
+                <option value='15'>Charlie Gamble</option> 
+                <option value='16'>Harry Wilson</option> 
+                <option value='17'>Lachie Swinton</option> 
+                <option value='19'>Pete Samu</option>
+                <option value='20'>Rob Valetini</option>
+                <option value='21'>Liam Wright</option>
+                <option value='22'>Rory Scott</option>
+                <option value='23'>Tom Hooper</option>            
+                <option value='24'>Langi Gleeson</option> 
+                <option value='25'>Brad Wilkin</option> 
+                <option value='26'>Fraser McReight</option> 
+                <option value='28'>Michael Hooper</option> 
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad forward/back</option> 
+                <option value='1'>Alex Mafi</option> 
+                <option value='2'>Billy Pollard</option> 
+                <option value='3'>Brandon Paenga-Amosa</option> 
+                <option value='4'>Dave Porecki</option> 
+                <option value='5'>Folau Fainga'a</option> 
+                <option value='6'>Jordan Uelese</option> 
+                <option value='7'>Lachlan Lonergan</option> 
+                <option value='8'>Matt Faessler</option> 
+                <option value='9'>Tolu Latu</option>
+                <option value='10'>Josh Nasser</option>  
+                <option value='11'>Connal McInerney</option>
+                <option value='1'>Angus Bell</option> 
+                <option value='2'>Blake Schoupp</option> 
+                <option value='3'>James Slipper</option> 
+                <option value='4'>Matt Gibbon</option> 
+                <option value='5'>Scott Sio</option>
+                <option value='6'>Tom Robertson</option>
+                <option value='1'>Allan Alaalatoa</option> 
+                <option value='2'>Harry Johnson-Holmes</option> 
+                <option value='3'>Pone Fa'amausili</option> 
+                <option value='4'>Rhys Van Nek</option> 
+                <option value='5'>Sam Talakai</option>
+                <option value='6'>Taniela Tupou</option>
+                <option value='7'>Tom Robertson</option>
+                <option value='1'>Cadeyrn Neville</option> 
+                <option value='2'>Darcy Swain</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Matt Philip</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Richie Arnold</option> 
+                <option value='9'>Rory Arnold</option>
+                <option value='10'>Ryan Smith</option>
+                <option value='11'>Trevor Hosea</option>
+                <option value='12'>Will Skelton</option>
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option>
+                <option value='15'>Charlie Gamble</option> 
+                <option value='16'>Harry Wilson</option> 
+                <option value='17'>Lachie Swinton</option> 
+                <option value='19'>Pete Samu</option>
+                <option value='20'>Rob Valetini</option>
+                <option value='21'>Liam Wright</option>
+                <option value='22'>Rory Scott</option>
+                <option value='23'>Tom Hooper</option>            
+                <option value='24'>Langi Gleeson</option> 
+                <option value='25'>Brad Wilkin</option> 
+                <option value='26'>Fraser McReight</option> 
+                <option value='28'>Michael Hooper</option>
+                <option value='1'>Jake Gordon</option> 
+                <option value='2'>Nic White</option> 
+                <option value='3'>Ryan Lonergan</option> 
+                <option value='4'>Tate McDermott</option>
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option>
+                <option value='1'>Hunter Paisami</option> 
+                <option value='5'>Len Ikitau</option> 
+                <option value='6'>Samu Kerevi</option>            
+                <option value='7'>Reece Hodge</option>
+                <option value='1'>Hamish Stewart</option>  
+                <option value='3'>Irae Simone</option> 
+                <option value='4'>James O'Connor</option> 
+                <option value='5'>Lalakai Foketi</option>
+                <option value='1'>Ben Donaldson</option> 
+                <option value='2'>Bernard Foley</option> 
+                <option value='3'>Carter Gordon</option> 
+                <option value='4'>Jack Debreczeni</option> 
+                <option value='5'>James O'Connor</option> 
+                <option value='6'>Lawson Creighton</option>            
+                <option value='7'>Noah Lolesio</option> 
+                <option value='8'>Quade Cooper</option> 
+                <option value='9'>Tane Edmed</option>
+                <option value='10'>Tom Lynagh</option>  
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad forward/back</option> 
+                <option value='1'>Alex Mafi</option> 
+                <option value='2'>Billy Pollard</option> 
+                <option value='3'>Brandon Paenga-Amosa</option> 
+                <option value='4'>Dave Porecki</option> 
+                <option value='5'>Folau Fainga'a</option> 
+                <option value='6'>Jordan Uelese</option> 
+                <option value='7'>Lachlan Lonergan</option> 
+                <option value='8'>Matt Faessler</option> 
+                <option value='9'>Tolu Latu</option>
+                <option value='10'>Josh Nasser</option>  
+                <option value='11'>Connal McInerney</option>
+                <option value='1'>Angus Bell</option> 
+                <option value='2'>Blake Schoupp</option> 
+                <option value='3'>James Slipper</option> 
+                <option value='4'>Matt Gibbon</option> 
+                <option value='5'>Scott Sio</option>
+                <option value='6'>Tom Robertson</option>
+                <option value='1'>Allan Alaalatoa</option> 
+                <option value='2'>Harry Johnson-Holmes</option> 
+                <option value='3'>Pone Fa'amausili</option> 
+                <option value='4'>Rhys Van Nek</option> 
+                <option value='5'>Sam Talakai</option>
+                <option value='6'>Taniela Tupou</option>
+                <option value='7'>Tom Robertson</option>
+                <option value='1'>Cadeyrn Neville</option> 
+                <option value='2'>Darcy Swain</option> 
+                <option value='3'>Jed Holloway</option> 
+                <option value='4'>Lukhan Salakaia-Loto</option> 
+                <option value='5'>Matt Philip</option> 
+                <option value='6'>Ned Hanigan</option> 
+                <option value='7'>Nick Frost</option> 
+                <option value='8'>Richie Arnold</option> 
+                <option value='9'>Rory Arnold</option>
+                <option value='10'>Ryan Smith</option>
+                <option value='11'>Trevor Hosea</option>
+                <option value='12'>Will Skelton</option>
+                <option value='13'>Seru Uru</option>
+                <option value='14'>Rob Leota</option>
+                <option value='15'>Charlie Gamble</option> 
+                <option value='16'>Harry Wilson</option> 
+                <option value='17'>Lachie Swinton</option> 
+                <option value='19'>Pete Samu</option>
+                <option value='20'>Rob Valetini</option>
+                <option value='21'>Liam Wright</option>
+                <option value='22'>Rory Scott</option>
+                <option value='23'>Tom Hooper</option>            
+                <option value='24'>Langi Gleeson</option> 
+                <option value='25'>Brad Wilkin</option> 
+                <option value='26'>Fraser McReight</option> 
+                <option value='28'>Michael Hooper</option>
+                <option value='1'>Jake Gordon</option> 
+                <option value='2'>Nic White</option> 
+                <option value='3'>Ryan Lonergan</option> 
+                <option value='4'>Tate McDermott</option>
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option>
+                <option value='1'>Hunter Paisami</option> 
+                <option value='5'>Len Ikitau</option> 
+                <option value='6'>Samu Kerevi</option>            
+                <option value='7'>Reece Hodge</option>
+                <option value='1'>Hamish Stewart</option>  
+                <option value='3'>Irae Simone</option> 
+                <option value='4'>James O'Connor</option> 
+                <option value='5'>Lalakai Foketi</option>
+                <option value='1'>Ben Donaldson</option> 
+                <option value='2'>Bernard Foley</option> 
+                <option value='3'>Carter Gordon</option> 
+                <option value='4'>Jack Debreczeni</option> 
+                <option value='5'>James O'Connor</option> 
+                <option value='6'>Lawson Creighton</option>            
+                <option value='7'>Noah Lolesio</option> 
+                <option value='8'>Quade Cooper</option> 
+                <option value='9'>Tane Edmed</option>
+                <option value='10'>Tom Lynagh</option>  
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad back</option> 
+                <option value='1'>Jake Gordon</option> 
+                <option value='2'>Nic White</option> 
+                <option value='3'>Ryan Lonergan</option> 
+                <option value='4'>Tate McDermott</option>
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option>
+                <option value='1'>Hunter Paisami</option> 
+                <option value='5'>Len Ikitau</option> 
+                <option value='6'>Samu Kerevi</option>            
+                <option value='7'>Reece Hodge</option>
+                <option value='1'>Hamish Stewart</option>  
+                <option value='3'>Irae Simone</option> 
+                <option value='4'>James O'Connor</option> 
+                <option value='5'>Lalakai Foketi</option>
+                <option value='1'>Ben Donaldson</option> 
+                <option value='2'>Bernard Foley</option> 
+                <option value='3'>Carter Gordon</option> 
+                <option value='4'>Jack Debreczeni</option> 
+                <option value='5'>James O'Connor</option> 
+                <option value='6'>Lawson Creighton</option>            
+                <option value='7'>Noah Lolesio</option> 
+                <option value='8'>Quade Cooper</option> 
+                <option value='9'>Tane Edmed</option>
+                <option value='10'>Tom Lynagh</option>  
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad back</option> 
+                <option value='1'>Jake Gordon</option> 
+                <option value='2'>Nic White</option> 
+                <option value='3'>Ryan Lonergan</option> 
+                <option value='4'>Tate McDermott</option>
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option>
+                <option value='1'>Hunter Paisami</option> 
+                <option value='5'>Len Ikitau</option> 
+                <option value='6'>Samu Kerevi</option>            
+                <option value='7'>Reece Hodge</option>
+                <option value='1'>Hamish Stewart</option>  
+                <option value='3'>Irae Simone</option> 
+                <option value='4'>James O'Connor</option> 
+                <option value='5'>Lalakai Foketi</option>
+                <option value='1'>Ben Donaldson</option> 
+                <option value='2'>Bernard Foley</option> 
+                <option value='3'>Carter Gordon</option> 
+                <option value='4'>Jack Debreczeni</option> 
+                <option value='5'>James O'Connor</option> 
+                <option value='6'>Lawson Creighton</option>            
+                <option value='7'>Noah Lolesio</option> 
+                <option value='8'>Quade Cooper</option> 
+                <option value='9'>Tane Edmed</option>
+                <option value='10'>Tom Lynagh</option>  
+            </select>
+        </li>
+        <li>
+            <select name='select' id='select'> 
+                <option value=''>Select a squad back</option> 
+                <option value='1'>Jake Gordon</option> 
+                <option value='2'>Nic White</option> 
+                <option value='3'>Ryan Lonergan</option> 
+                <option value='4'>Tate McDermott</option>
+                <option value='1'>Andrew Kellaway</option> 
+                <option value='2'>Andy Muirhead</option> 
+                <option value='3'>Corey Toole</option> 
+                <option value='4'>Dylan Pietsch</option> 
+                <option value='5'>Filipo Daugunu</option> 
+                <option value='6'>Izaia Perese</option>            
+                <option value='7'>Jock Campbell</option> 
+                <option value='8'>Josh Flook</option> 
+                <option value='9'>Jordan Petaia</option>
+                <option value='10'>Lachie Anderson</option> 
+                <option value='11'>Marika Koroibete</option>
+                <option value='12'>Mark Nawaqanitawase</option>
+                <option value='13'>Max Jorgensen</option>
+                <option value='14'>Suliasi Vunivalu</option>
+                <option value='15'>Tom Banks</option>
+                <option value='16'>Tom Wright</option>
+                <option value='1'>Hunter Paisami</option> 
+                <option value='5'>Len Ikitau</option> 
+                <option value='6'>Samu Kerevi</option>            
+                <option value='7'>Reece Hodge</option>
+                <option value='1'>Hamish Stewart</option>  
+                <option value='3'>Irae Simone</option> 
+                <option value='4'>James O'Connor</option> 
+                <option value='5'>Lalakai Foketi</option>
+                <option value='1'>Ben Donaldson</option> 
+                <option value='2'>Bernard Foley</option> 
+                <option value='3'>Carter Gordon</option> 
+                <option value='4'>Jack Debreczeni</option> 
+                <option value='5'>James O'Connor</option> 
+                <option value='6'>Lawson Creighton</option>            
+                <option value='7'>Noah Lolesio</option> 
+                <option value='8'>Quade Cooper</option> 
+                <option value='9'>Tane Edmed</option>
+                <option value='10'>Tom Lynagh</option>  
+            </select>
+        </li>
+    </ul>
+
+</div>
+</body>
+</html>
