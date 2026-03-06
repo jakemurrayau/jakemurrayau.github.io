@@ -52,7 +52,8 @@
     thead th:last-child { border-top-right-radius:var(--radius); }
     tbody td, tbody th { padding:10px; border-bottom:1px solid var(--border); vertical-align:middle; }
     tbody tr:last-child td, tbody tr:last-child th { border-bottom:none; }
-    tbody th.name { width:220px; }
+    /* widen name column */
+    tbody th.name { width:280px; }
     .name-edit { width:100%; background:#0a0f1d; border:1px solid var(--border); border-radius:10px; padding:8px 10px; color:var(--text); font-weight:600; outline:none; }
     .cell { display:flex; align-items:center; gap:8px; }
     .toggle { display:inline-flex; align-items:center; gap:8px; background:#0a0f1d; border:1px solid var(--border); border-radius:999px; padding:6px 8px; position:relative; }
@@ -98,7 +99,7 @@
       <div class="legend">
         <span class="pill"><span class="dot wfh"></span> WFH</span>
         <span class="pill"><span class="dot wfo"></span> WFO</span>
-        <span class="pill subtle">Tip: Click a name to edit. Use <span class="kbd">Tab</span> to move across cells.</span>
+        <span class="pill subtle">Tip: Click <em>Edit</em> to enable changes. Use <span class="kbd">Tab</span> to move across cells.</span>
       </div>
 
       <div class="table-wrap">
@@ -106,11 +107,11 @@
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Monday <span class="count" id="count-mon"></span></th>
-              <th scope="col">Tuesday <span class="count" id="count-tue"></span></th>
-              <th scope="col">Wednesday <span class="count" id="count-wed"></span></th>
-              <th scope="col">Thursday <span class="count" id="count-thu"></span></th>
-              <th scope="col">Friday <span class="count" id="count-fri"></span></th>
+              <th scope="col">Monday</th>
+              <th scope="col">Tuesday</th>
+              <th scope="col">Wednesday</th>
+              <th scope="col">Thursday</th>
+              <th scope="col">Friday</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
@@ -127,8 +128,7 @@
     </div>
   </div>
 
-  <!-- Firebase CDN (compat builds for simplicity).
-       Tip: If these versions 404 in the future, bump the version number to the latest 10.x. -->
+  <!-- Firebase CDN (compat builds). If these 404 later, bump to the latest 12.x. -->
   <script src="https://www.gstatic.com/firebasejs/12.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.10.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore-compat.js"></script>
@@ -141,7 +141,6 @@
       enabled: true, // set false to force local-only mode
 
       // Replace with your Firebase project config (from Firebase Console > Project settings)
-      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       firebaseConfig: {
         apiKey: "AIzaSyB1LHfa9-tRSDnqxw6UivMsHd44xMsTbSA",
         authDomain: "testgithubslc.firebaseapp.com",
@@ -150,7 +149,7 @@
         messagingSenderId: "330616354613",
         appId: "1:330616354613:web:596bf699be9c8e89ffbe7c",
         measurementId: "G-5SJCM47553"
-      }, // ← important comma
+      },
 
       // Team ID is taken from URL hash (#team-id). If none, 'default'
       teamId: (location.hash || "#default").slice(1)
@@ -175,6 +174,10 @@
     let usingCloud = false;
     let auth = null, db = null, docRef = null, unsubSnap = null;
 
+    // Edit-state (in-memory, not persisted until Submit)
+    const editingIds = new Set();
+    const editBuffer = {}; // { [personId]: deep copy of person under edit }
+
     function uid() { return 'p_' + Math.random().toString(36).slice(2,9); }
     function defaultPerson(name='New Person') {
       return { id: uid(), name, days: { mon:'',tue:'',wed:'',thu:'',fri:'' } };
@@ -184,7 +187,6 @@
     }
 
     function setCloudStatus(kind, msg='') {
-      // kind: 'checking' | 'ok' | 'warn' | 'err' | 'local'
       const badges = {
         checking: { text: 'Cloud: checking…', cls:'' },
         ok: { text: 'Cloud: connected', cls:'ok' },
@@ -236,10 +238,8 @@
         setCloudStatus('checking');
         const app = firebase.initializeApp(cfg);
         auth = firebase.auth();
-        // Anonymous sign-in keeps it simple; you can switch to Google sign-in later.
         await auth.signInAnonymously();
         db = firebase.firestore();
-        // Optional: offline cache; Firestore will sync once online.
         try { await db.enablePersistence(); } catch (_) {}
         usingCloud = true;
         setCloudStatus('ok', `
@@ -270,7 +270,6 @@
             return;
           }
         }
-        // no data yet: initialize with default
         appState = defaultState();
         await docRef.set(appState, { merge: true });
         render();
@@ -295,9 +294,7 @@
       }
     }
 
-    function getState() {
-      return appState;
-    }
+    function getState() { return appState; }
     function setState(newData) {
       appState = newData;
       saveState();
@@ -321,152 +318,97 @@
       }
     }
 
-    function makeDayToggle(personId, day, value) {
-      const wrap = document.createElement('div'); wrap.className = 'cell';
-      const toggle = document.createElement('div'); toggle.className = 'toggle';
-      const btnWFH = document.createElement('button'); btnWFH.type='button'; btnWFH.className='opt-wfh'; btnWFH.textContent='WFH';
-      const btnWFO = document.createElement('button'); btnWFO.type='button'; btnWFO.className='opt-wfo'; btnWFO.textContent='WFO';
+    // Helpers for edit lifecycle
+    function startEdit(person) {
+      editBuffer[person.id] = JSON.parse(JSON.stringify(person));
+      editingIds.add(person.id);
+      render();
+    }
+    function discardEdit(personId) {
+      delete editBuffer[personId];
+      editingIds.delete(personId);
+      render();
+    }
+    function submitEdit(personId) {
+      const buf = editBuffer[personId];
+      if (!buf) return discardEdit(personId);
+      const idx = appState.people.findIndex(p => p.id === personId);
+      if (idx >= 0) appState.people[idx] = buf;
+      delete editBuffer[personId];
+      editingIds.delete(personId);
+      setState(appState); // persists to Firebase/local
+    }
+
+    function renderDayCell(personId, day) {
+      const isEditing = editingIds.has(personId);
+      const container = document.createElement('div');
+      container.className = 'cell';
+
+      const source = isEditing ? editBuffer[personId] : appState.people.find(p => p.id === personId);
+      const curVal = source?.days?.[day] || '';
+
+      // Chip (always visible)
+      const note = document.createElement('span');
+      note.className = 'chip';
+      note.textContent = curVal || '—';
+      note.style.borderColor = curVal === 'WFH' ? 'rgba(20,184,166,.5)' :
+        (curVal === 'WFO' ? 'rgba(139,92,246,.5)' : 'var(--border)');
+
+      if (!isEditing) {
+        // View-only mode: show chip only
+        container.appendChild(note);
+        return container;
+      }
+
+      // Editing mode: show toggle + chip
+      const toggle = document.createElement('div');
+      toggle.className = 'toggle';
+
+      const btnWFH = document.createElement('button');
+      btnWFH.type='button'; btnWFH.className='opt-wfh'; btnWFH.textContent='WFH';
+
+      const btnWFO = document.createElement('button');
+      btnWFO.type='button'; btnWFO.className='opt-wfo'; btnWFO.textContent='WFO';
 
       function refreshActive(v) {
         btnWFH.classList.toggle('active', v === 'WFH'); btnWFH.setAttribute('aria-pressed', v==='WFH');
         btnWFO.classList.toggle('active', v === 'WFO'); btnWFO.setAttribute('aria-pressed', v==='WFO');
+        note.textContent = v || '—';
+        note.style.borderColor = v === 'WFH' ? 'rgba(20,184,166,.5)' :
+          (v === 'WFO' ? 'rgba(139,92,246,.5)' : 'var(--border)');
       }
-      refreshActive(value);
+      refreshActive(curVal);
 
-      const onClick = (sel) => {
-        const data = getState();
-        const person = data.people.find(p => p.id === personId);
-        person.days[day] = (person.days[day] === sel) ? '' : sel;
-        setState(data);
+      const onSelect = (sel) => {
+        const buf = editBuffer[personId];
+        const current = buf.days[day];
+        buf.days[day] = (current === sel) ? '' : sel;
+        refreshActive(buf.days[day]);
+        // No save here; commit happens on Submit
       };
 
-      btnWFH.addEventListener('click', () => onClick('WFH'));
-      btnWFO.addEventListener('click', () => onClick('WFO'));
+      btnWFH.addEventListener('click', () => onSelect('WFH'));
+      btnWFO.addEventListener('click', () => onSelect('WFO'));
 
       toggle.appendChild(btnWFH); toggle.appendChild(btnWFO);
-      wrap.appendChild(toggle);
-
-      const note = document.createElement('span'); note.className='chip';
-      const syncNote = () => {
-        const v = getState().people.find(p => p.id === personId).days[day];
-        note.textContent = v || '—';
-        note.style.borderColor = v === 'WFH' ? 'rgba(20,184,166,.5)' : (v === 'WFO' ? 'rgba(139,92,246,.5)' : 'var(--border)');
-        refreshActive(v);
-        updateCounts();
-      };
-      syncNote();
-      btnWFH.addEventListener('click', syncNote);
-      btnWFO.addEventListener('click', syncNote);
-      wrap.appendChild(note);
-      return wrap;
+      container.appendChild(toggle);
+      container.appendChild(note);
+      return container;
     }
 
     function render() {
       if (!appState) return;
       tbody.innerHTML = '';
       for (const person of appState.people) {
+        const isEditing = editingIds.has(person.id);
+        const working = isEditing ? editBuffer[person.id] : person;
+
         const tr = document.createElement('tr');
 
         // Name
         const th = document.createElement('th'); th.scope='row'; th.className='name';
-        const input = document.createElement('input'); input.value = person.name; input.className='name-edit'; input.setAttribute('aria-label','Name');
-        input.addEventListener('change', () => {
-          person.name = input.value || 'Unnamed';
-          saveState();
-        });
-        th.appendChild(input); tr.appendChild(th);
-
-        // Day cells
-        for (const d of DAYS) {
-          const td = document.createElement('td');
-          td.appendChild(makeDayToggle(person.id, d, person.days[d]));
-          tr.appendChild(td);
-        }
-
-        // Actions
-        const tdActions = document.createElement('td'); tdActions.className='row-actions';
-        const dupBtn = document.createElement('button'); dupBtn.className='btn btn-small'; dupBtn.textContent='Duplicate';
-        dupBtn.addEventListener('click', () => {
-          const idx = appState.people.findIndex(x => x.id === person.id);
-          const clone = JSON.parse(JSON.stringify(person)); clone.id = uid(); clone.name = person.name + ' (copy)';
-          appState.people.splice(idx+1, 0, clone); setState(appState);
-        });
-        const delBtn = document.createElement('button'); delBtn.className='btn btn-small btn-danger'; delBtn.textContent='Remove';
-        delBtn.addEventListener('click', () => {
-          if (appState.people.length <= 1) { alert('At least one person must remain.'); return; }
-          appState.people = appState.people.filter(x => x.id !== person.id); setState(appState);
-        });
-        tdActions.appendChild(dupBtn); tdActions.appendChild(delBtn); tr.appendChild(tdActions);
-
-        tbody.appendChild(tr);
-      }
-      updateCounts();
-    }
-
-    // Toolbar events
-    addBtn.addEventListener('click', () => {
-      appState.people.push(defaultPerson(`Person ${appState.people.length + 1}`));
-      setState(appState);
-    });
-
-    resetBtn.addEventListener('click', () => {
-      if (!confirm('Clear all WFH/WFO selections for this week?')) return;
-      for (const p of appState.people) for (const d of DAYS) p.days[d] = '';
-      setState(appState);
-    });
-
-    exportBtn.addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(getState(), null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = `location_calendar_${CLOUD.teamId}.json`; a.click(); URL.revokeObjectURL(url);
-    });
-
-    importInput.addEventListener('change', async (e) => {
-      const file = e.target.files?.[0]; if (!file) return;
-      try {
-        const text = await file.text();
-        const json = JSON.parse(text);
-        if (!json || !Array.isArray(json.people)) throw new Error('Invalid file format');
-        // sanitize
-        json.people = json.people.map(p => ({
-          id: p.id || uid(),
-          name: (p.name || 'Unnamed').toString().slice(0,80),
-          days: {
-            mon: (p.days?.mon === 'WFH' || p.days?.mon === 'WFO') ? p.days.mon : '',
-            tue: (p.days?.tue === 'WFH' || p.days?.tue === 'WFO') ? p.days.tue : '',
-            wed: (p.days?.wed === 'WFH' || p.days?.wed === 'WFO') ? p.days.wed : '',
-            thu: (p.days?.thu === 'WFH' || p.days?.thu === 'WFO') ? p.days.thu : '',
-            fri: (p.days?.fri === 'WFH' || p.days?.fri === 'WFO') ? p.days.fri : '',
-          }
-        }));
-        setState(json);
-        importInput.value = '';
-      } catch (err) {
-        console.error(err);
-        alert('Failed to import. Ensure the file is a JSON exported from this tool.');
-      }
-    });
-
-    joinTeamBtn.addEventListener('click', () => {
-      const newId = (teamIdInput.value || '').trim();
-      if (!newId) { alert('Enter a Team ID first.'); return; }
-      location.hash = '#' + newId;
-      // reload to attach new listener
-      location.reload();
-    });
-
-    // Boot
-    (async function init() {
-      // Pre-populate Team field from hash
-      teamIdInput.value = CLOUD.teamId;
-      // Start in local (so UI appears immediately), then attempt cloud
-      appState = loadLocal() || defaultState();
-      render();
-
-      await initCloudIfConfigured();
-      // If using cloud but no snapshot yet, attachListener will render on first snap.
-      // Otherwise, we already rendered local and will keep it until cloud connects.
-    })();
-  </script>
-</body>
-</html>
+        const input = document.createElement('input');
+        input.value = working.name;
+        input.className='name-edit';
+        input.setAttribute('aria-label','Name');
+        input.disabled = !isEditing;
