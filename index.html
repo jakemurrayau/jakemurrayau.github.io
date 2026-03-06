@@ -1,9 +1,10 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Team Location Calendar (Serverless URL Mode)</title>
+  <title>Team Location Calendar (Cloud-Enabled)</title>
   <style>
     :root {
       --bg:#0f172a; --panel:#111827; --panel-2:#0b1220; --text:#e5e7eb; --muted:#9ca3af;
@@ -38,10 +39,11 @@
     .dot.wfh { background:var(--wfh); box-shadow:0 0 10px rgba(20,184,166,.6); }
     .dot.wfo { background:var(--wfo); box-shadow:0 0 10px rgba(139,92,246,.6); }
 
-    .info { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; }
-    .info.ok { background:rgba(34,197,94,.08); color:var(--muted); }
-    .info.warn { background:rgba(245,158,11,.08); color:var(--muted); }
-    .info.note { background:rgba(56,189,248,.08); color:var(--muted); }
+    .cloud { width:100%; padding:10px 12px; border:1px solid var(--border);
+      background:rgba(56,189,248,.08); color:var(--muted); border-radius:10px; }
+    .cloud.ok { background:rgba(34,197,94,.08); }
+    .cloud.warn { background:rgba(245,158,11,.08); }
+    .cloud.err { background:rgba(239,68,68,.08); }
 
     .table-wrap { width:100%; overflow-x:auto; }
     table { width:100%; border-collapse:separate; border-spacing:0; }
@@ -66,6 +68,9 @@
     .subtle { color:var(--muted); font-size:.9rem; }
     .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size:.8rem; background:#0b1020; border:1px solid var(--border); border-bottom-width:3px; border-radius:6px; padding:2px 6px; color:var(--muted); }
+    .field { display:flex; align-items:center; gap:6px; background:#0a0f1d; border:1px solid var(--border); border-radius:10px; padding:6px 8px; }
+    .field input { background:transparent; border:none; color:var(--text); outline:none; font-weight:600; }
+    @media (max-width: 720px) { .title { width:100%; } .toolbar { width:100%; } }
   </style>
 </head>
 <body>
@@ -73,20 +78,21 @@
     <header>
       <div class="title">
         📅 Team Location (Mon–Fri)
-        <span id="modeBadge" class="badge">Mode: URL (serverless)</span>
+        <span id="cloudBadge" class="badge">Cloud: checking…</span>
       </div>
       <div class="toolbar">
+        <div class="field" title="Set a shared Team ID and share the URL">
+          <span>Team:</span>
+          <input id="teamId" placeholder="e.g., brisbane-team" />
+          <button id="joinTeam" class="btn btn-outline btn-small">Join</button>
+        </div>
         <button id="addPerson" class="btn btn-primary" title="Add a new person">＋ Add Person</button>
         <button id="resetWeek" class="btn btn-outline" title="Clear all selections">Reset Week</button>
-        <button id="shareLink" class="btn btn-outline" title="Copy a shareable link">Share Link</button>
         <button id="exportData" class="btn btn-outline" title="Download JSON">Export</button>
         <label for="importFile" class="btn btn-outline" title="Import JSON">Import</label>
         <input id="importFile" type="file" accept="application/json" style="display:none" />
       </div>
-      <div id="infoMsg" class="info note">
-        <strong>How sharing works (no servers):</strong> The calendar is encoded in the URL (after <span class="kbd">#d=…</span>). 
-        Anyone with the link can open and edit. After editing, click <em>Share Link</em> to copy the updated URL and share again.
-      </div>
+      <div id="cloudMsg" class="cloud warn" style="display:none"></div>
     </header>
 
     <div class="panel">
@@ -115,39 +121,59 @@
 
       <div class="footer-actions">
         <div class="subtle">
-          This is 100% serverless: data is saved in the URL and in your browser (localStorage). 
-          For larger teams, use Export/Import JSON. (Note: real-time multi-user editing needs a backend.)
+          Cloud sync is automatic when configured. Use Export/Import for backups. Share your Team ID link:
+          <span class="kbd">…/index.html#&lt;team-id&gt;</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- LZ-String (MIT) inlined for URL-safe compression -->
-  <script>
-  /*!
-   * LZ-String (https://github.com/pieroxy/lz-string) – MIT License
-   * Only using compressToEncodedURIComponent / decompressFromEncodedURIComponent
-   */
-  var LZString=function(){function o(o,r){if(!t[o]){t[o]={};for(var n=0;n<o.length;n++)t[o][o.charAt(n)]=n}return t[o][r]}var r=String.fromCharCode,n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={},t={},i={compressToEncodedURIComponent:function(o){return null==o?"":i._compress(o,6,function(o){return n.charAt(o)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(e){return o(n,r.charAt(e))})},_compress:function(o,n,e){if(null==o)return"";var t,i,u,s={},p={},a="",c="",l="",h=2,f=3,d=2,m=[],v=0,w=0;for(u=0;u<o.length;u+=1)if(a=o.charAt(u),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,p[a]=!0),c=l+a,Object.prototype.hasOwnProperty.call(s,c))l=c;else{if(Object.prototype.hasOwnProperty.call(p,l)){if(l.charCodeAt(0)<256){for(t=0;t<d;t++)v<<=1,w==n-1?(w=0,m.push(e(v)),v=0):w++;for(i=l.charCodeAt(0),t=0;t<8;t++)v=v<<1|1&i,w==n-1?(w=0,m.push(e(v)),v=0):w++,i>>=1}else{for(i=1,t=0;t<d;t++)v=v<<1|i,w==n-1?(w=0,m.push(e(v)),v=0):w++,i=0;for(i=l.charCodeAt(0),t=0;t<16;t++)v=v<<1|1&i,w==n-1?(w=0,m.push(e(v)),v=0):w++,i>>=1}h--,0==h&&(h=Math.pow(2,d),d++),delete p[l]}else for(i=s[l],t=0;t<d;t++)v=v<<1|1&i,w==n-1?(w=0,m.push(e(v)),v=0):w++,i>>=1;h--,0==h&&(h=Math.pow(2,d),d++),s[c]=f++,l=String(a)}if(""!==l){if(Object.prototype.hasOwnProperty.call(p,l)){if(l.charCodeAt(0)<256){for(t=0;t<d;t++)v<<=1,w==n-1?(w=0,m.push(e(v)),v=0):w++;for(i=l.charCodeAt(0),t=0;t<8;t++)v=v<<1|1&i,w==n-1?(w=0,m.push(e(v)),v=0):w++,i>>=1}else{for(i=1,t=0;t<d;t++)v=v<<1|i,w==n-1?(w=0,m.push(e(v)),v=0):w++,i=0;for(i=l.charCodeAt(0),t=0;t<16;t++)v=v<<1|1&i,w==n-1?(w=0,m.push(e(v)),v=0):w++,i>>=1}h--,0==h&&(h=Math.pow(2,d),d++),delete p[l]}else for(i=s[l],t=0;t<d;t++)v=v<<1|1&i,w==n-1?(w=0,m.push(e(v)),v=0):w++,i>>=1;h--,0==h&&(h=Math.pow(2,d),d++);}for(i=2,t=0;t<d;t++)v=v<<1|i,w==n-1?(w=0,m.push(e(v)),v=0):w++;for(;;){if(v<<=1,w==n-1){m.push(e(v));break}w++}return m.join("")},_decompress:function(o,n,e){var t,i,u,s,p,a,c,l,h=[],f=4,d=4,m=3,v="",w=[],A={val:e(0),position:n,index:1};for(i=0;i<3;i+=1)h[i]=i;for(u=0,p=Math.pow(2,2),a=1;a!=p;)c=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),u|=(c>0?1:0)*a,a<<=1;switch(t=u){case 0:for(u=0,p=Math.pow(2,8),a=1;a!=p;)c=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),u|=(c>0?1:0)*a,a<<=1;i=r(u);break;case 1:for(u=0,p=Math.pow(2,16),a=1;a!=p;)c=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),u|=(c>0?1:0)*a,a<<=1;i=r(u);break;case 2:return""}h[3]=i;for(s=i,w.push(i);;){if(A.index>o)return"";for(u=0,p=Math.pow(2,m),a=1;a!=p;)c=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),u|=(c>0?1:0)*a,a<<=1;switch(i=u){case 0:for(u=0,p=Math.pow(2,8),a=1;a!=p;)c=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),u|=(c>0?1:0)*a,a<<=1;h[d++]=r(u),i=d-1,f--;break;case 1:for(u=0,p=Math.pow(2,16),a=1;a!=p;)c=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),u|=(c>0?1:0)*a,a<<=1;h[d++]=r(u),i=d-1,f--;break;case 2:return w.join("")}if(0==f&&(f=Math.pow(2,m),m++),h[i])v=h[i];else{if(i!==d)return null;v=s+s.charAt(0)}w.push(v),h[d++]=s+v.charAt(0),s=v,0==--f&&(f=Math.pow(2,m),m++)}}
-  }();
-  </script>
+  <!-- Firebase CDN (compat builds for simplicity).
+       Tip: If these versions 404 in the future, bump the version number to the latest 10.x. -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
   <script>
     /***********************
-     * Serverless state: URL hash + localStorage
+     * CONFIGURE CLOUD HERE
      ***********************/
-    const STORAGE_KEY = 'location_calendar_v3'; // keeps a local copy per user (optional)
-    const DAYS = ['mon','tue','wed','thu','fri'];
+    const CLOUD = {
+      enabled: true, // set false to force local-only mode
+      // TODO: Replace with your Firebase project config (from Firebase Console > Project settings)
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyB1LHfa9-tRSDnqxw6UivMsHd44xMsTbSA",
+        authDomain: "testgithubslc.firebaseapp.com",
+        projectId: "testgithubslc",
+        storageBucket: "testgithubslc.firebasestorage.app",
+        messagingSenderId: "330616354613",
+        appId: "1:330616354613:web:596bf699be9c8e89ffbe7c",
+        measurementId: "G-5SJCM47553"
+      };
+      // Team ID is taken from URL hash (#team-id). If none, 'default'
+      teamId: (location.hash || "#default").slice(1)
+    };
 
+    /***********************
+     * APP STATE
+     ***********************/
+    const STORAGE_KEY = 'location_calendar_v2';
+    const DAYS = ['mon','tue','wed','thu','fri'];
     const tbody = document.getElementById('tbody');
     const addBtn = document.getElementById('addPerson');
     const resetBtn = document.getElementById('resetWeek');
-    const shareBtn = document.getElementById('shareLink');
     const exportBtn = document.getElementById('exportData');
     const importInput = document.getElementById('importFile');
-    const infoMsg = document.getElementById('infoMsg');
+    const teamIdInput = document.getElementById('teamId');
+    const joinTeamBtn = document.getElementById('joinTeam');
+    const cloudBadge = document.getElementById('cloudBadge');
+    const cloudMsg = document.getElementById('cloudMsg');
 
     let appState = null;
+    let usingCloud = false;
+    let auth = null, db = null, docRef = null, unsubSnap = null;
+
     function uid() { return 'p_' + Math.random().toString(36).slice(2,9); }
     function defaultPerson(name='New Person') {
       return { id: uid(), name, days: { mon:'',tue:'',wed:'',thu:'',fri:'' } };
@@ -156,77 +182,127 @@
       return { people: [ defaultPerson('Person 1'), defaultPerson('Person 2'), defaultPerson('Person 3') ] };
     }
 
-    /* ---------- URL encoding/decoding ---------- */
-    function encodeStateToHash(state) {
-      const json = JSON.stringify(state);
-      const enc = LZString.compressToEncodedURIComponent(json);
-      return '#d=' + enc; // keep short param name
+    function setCloudStatus(kind, msg='') {
+      // kind: 'checking' | 'ok' | 'warn' | 'err' | 'local'
+      const badges = {
+        checking: { text: 'Cloud: checking…', cls:'' },
+        ok: { text: 'Cloud: connected', cls:'ok' },
+        local: { text: 'Cloud: local mode', cls:'' },
+        warn: { text: 'Cloud: limited', cls:'warn' },
+        err: { text: 'Cloud: error', cls:'err' },
+      };
+      const b = badges[kind] || badges.warn;
+      cloudBadge.textContent = b.text;
+      cloudMsg.style.display = msg ? 'block' : 'none';
+      cloudMsg.className = 'cloud ' + (b.cls || '');
+      cloudMsg.innerHTML = msg || '';
     }
-    function decodeStateFromHash() {
-      const h = location.hash || '';
-      const m = h.match(/[#&]d=([^&]+)/);
-      if (!m) return null;
-      try {
-        const json = LZString.decompressFromEncodedURIComponent(m[1]);
-        const obj = JSON.parse(json);
-        if (obj && Array.isArray(obj.people)) return obj;
-      } catch (e) { console.warn('Hash decode failed', e); }
-      return null;
-    }
-    function replaceUrlHashFromState(state) {
-      const newHash = encodeStateToHash(state);
-      if (location.hash !== newHash) {
-        history.replaceState(null, '', newHash);
-      }
-    }
-    function debounce(fn, wait=250) {
-      let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), wait); };
-    }
-    const updateUrlDebounced = debounce(replaceUrlHashFromState, 200);
 
-    /* ---------- Local storage helpers ---------- */
     function saveLocal(data) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (_) {}
+      localStorage.setItem(STORAGE_KEY + ':' + CLOUD.teamId, JSON.stringify(data));
     }
     function loadLocal() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY + ':' + CLOUD.teamId);
         if (!raw) return null;
         const parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.people)) return parsed;
-      } catch (_) {}
-      return null;
+        return null;
+      } catch { return null; }
     }
 
-    /* ---------- State wiring ---------- */
-    function getState() { return appState; }
+    async function initCloudIfConfigured() {
+      if (!CLOUD.enabled) {
+        usingCloud = false;
+        setCloudStatus('local', `
+          <strong>Cloud not enabled.</strong> You're in local-only mode (this browser only).
+          Add your Firebase config in the script to enable cloud sync. You can still Export/Import JSON.
+        `);
+        return;
+      }
+      const cfg = CLOUD.firebaseConfig || {};
+      const cfgComplete = cfg.apiKey && cfg.projectId && cfg.appId;
+      if (!cfgComplete) {
+        usingCloud = false;
+        setCloudStatus('local', `
+          <strong>Cloud not configured.</strong> Fill in your Firebase config in the script
+          (apiKey, authDomain, projectId, appId). Until then, data is stored locally.
+        `);
+        return;
+      }
+
+      try {
+        setCloudStatus('checking');
+        const app = firebase.initializeApp(cfg);
+        auth = firebase.auth();
+        // Anonymous sign-in keeps it simple; you can switch to Google sign-in later.
+        await auth.signInAnonymously();
+        db = firebase.firestore();
+        // Optional: offline cache; Firestore will sync once online.
+        try { await db.enablePersistence(); } catch (_) {}
+        usingCloud = true;
+        setCloudStatus('ok', `
+          <strong>Cloud connected.</strong> Team ID: <code>${CLOUD.teamId}</code>.
+          Share this link: <code>${location.href.split('#')[0]}#${CLOUD.teamId}</code>
+        `);
+        attachListener(CLOUD.teamId);
+      } catch (e) {
+        console.warn('Cloud init failed:', e);
+        usingCloud = false;
+        setCloudStatus('err', `
+          <strong>Cloud error.</strong> Falling back to local-only mode.<br/>
+          Check Firebase config and Firestore/Authentication settings in the Firebase Console.
+        `);
+      }
+    }
+
+    function attachListener(teamId) {
+      if (!db) return;
+      if (unsubSnap) { try { unsubSnap(); } catch(_) {} }
+      docRef = db.collection('teams').doc(teamId);
+      unsubSnap = docRef.onSnapshot(async (snap) => {
+        if (snap.exists) {
+          const data = snap.data();
+          if (data && Array.isArray(data.people)) {
+            appState = data;
+            render();
+            return;
+          }
+        }
+        // no data yet: initialize with default
+        appState = defaultState();
+        await docRef.set(appState, { merge: true });
+        render();
+      }, (err) => {
+        console.error('Snapshot error', err);
+        setCloudStatus('err', 'Realtime updates unavailable. You can continue; changes will try to sync.');
+        if (!appState) { appState = loadLocal() || defaultState(); render(); }
+      });
+    }
+
+    async function saveState() {
+      if (usingCloud && docRef) {
+        try {
+          await docRef.set({ ...appState, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+        } catch (e) {
+          console.warn('Cloud save failed; keeping local backup', e);
+          saveLocal(appState);
+          setCloudStatus('warn', 'Cloud save failed (network or rules). Your latest changes are cached locally and will retry.');
+        }
+      } else {
+        saveLocal(appState);
+      }
+    }
+
+    function getState() {
+      return appState;
+    }
     function setState(newData) {
       appState = newData;
-      saveLocal(appState);
-      updateUrlDebounced(appState);
+      saveState();
       render();
     }
-    function ensureValidState(obj) {
-      const clean = { people: [] };
-      const src = (obj && Array.isArray(obj.people)) ? obj.people : [];
-      for (const p of src) {
-        clean.people.push({
-          id: p.id || uid(),
-          name: (p.name || 'Unnamed').toString().slice(0,80),
-          days: {
-            mon: (p.days?.mon === 'WFH' || p.days?.mon === 'WFO') ? p.days.mon : '',
-            tue: (p.days?.tue === 'WFH' || p.days?.tue === 'WFO') ? p.days.tue : '',
-            wed: (p.days?.wed === 'WFH' || p.days?.wed === 'WFO') ? p.days.wed : '',
-            thu: (p.days?.thu === 'WFH' || p.days?.thu === 'WFO') ? p.days.thu : '',
-            fri: (p.days?.fri === 'WFH' || p.days?.fri === 'WFO') ? p.days.fri : '',
-          }
-        });
-      }
-      if (!clean.people.length) return defaultState();
-      return clean;
-    }
 
-    /* ---------- UI helpers ---------- */
     function updateCounts() {
       const data = getState();
       const counts = { mon:{WFH:0,WFO:0}, tue:{WFH:0,WFO:0}, wed:{WFH:0,WFO:0}, thu:{WFH:0,WFO:0}, fri:{WFH:0,WFO:0} };
@@ -239,7 +315,8 @@
       for (const d of DAYS) {
         const el = document.getElementById('count-' + d);
         if (!el) continue;
-        el.innerHTML = ` – <b>${counts[d].WFH}</b> WFH / <b>${counts[d].WFO}</b> WFO`;
+        const wfh = counts[d].WFH, wfo = counts[d].WFO;
+        el.innerHTML = ` – <b>${wfh}</b> WFH / <b>${wfo}</b> WFO`;
       }
     }
 
@@ -292,7 +369,10 @@
         // Name
         const th = document.createElement('th'); th.scope='row'; th.className='name';
         const input = document.createElement('input'); input.value = person.name; input.className='name-edit'; input.setAttribute('aria-label','Name');
-        input.addEventListener('change', () => { person.name = input.value || 'Unnamed'; setState(appState); });
+        input.addEventListener('change', () => {
+          person.name = input.value || 'Unnamed';
+          saveState();
+        });
         th.appendChild(input); tr.appendChild(th);
 
         // Day cells
@@ -334,30 +414,30 @@
       setState(appState);
     });
 
-    shareBtn.addEventListener('click', async () => {
-      const url = location.href.split('#')[0] + encodeStateToHash(getState());
-      try {
-        await navigator.clipboard.writeText(url);
-        infoMsg.className = 'info ok';
-        infoMsg.innerHTML = '<strong>Copied!</strong> Share this link so others can open and edit.';
-        setTimeout(()=> { infoMsg.className='info note'; infoMsg.innerHTML =
-          '<strong>How sharing works (no servers):</strong> The calendar is encoded in the URL (after <span class="kbd">#d=…</span>). Anyone with the link can open and edit. After editing, click <em>Share Link</em> to copy the updated URL and share again.'; }, 2000);
-      } catch {
-        prompt('Copy this link:', url);
-      }
-    });
-
     exportBtn.addEventListener('click', () => {
       const blob = new Blob([JSON.stringify(getState(), null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'location_calendar.json'; a.click(); URL.revokeObjectURL(url);
+      const a = document.createElement('a'); a.href = url; a.download = `location_calendar_${CLOUD.teamId}.json`; a.click(); URL.revokeObjectURL(url);
     });
 
     importInput.addEventListener('change', async (e) => {
       const file = e.target.files?.[0]; if (!file) return;
       try {
         const text = await file.text();
-        const json = ensureValidState(JSON.parse(text));
+        const json = JSON.parse(text);
+        if (!json || !Array.isArray(json.people)) throw new Error('Invalid file format');
+        // sanitize
+        json.people = json.people.map(p => ({
+          id: p.id || uid(),
+          name: (p.name || 'Unnamed').toString().slice(0,80),
+          days: {
+            mon: (p.days?.mon === 'WFH' || p.days?.mon === 'WFO') ? p.days.mon : '',
+            tue: (p.days?.tue === 'WFH' || p.days?.tue === 'WFO') ? p.days.tue : '',
+            wed: (p.days?.wed === 'WFH' || p.days?.wed === 'WFO') ? p.days.wed : '',
+            thu: (p.days?.thu === 'WFH' || p.days?.thu === 'WFO') ? p.days.thu : '',
+            fri: (p.days?.fri === 'WFH' || p.days?.fri === 'WFO') ? p.days.fri : '',
+          }
+        }));
         setState(json);
         importInput.value = '';
       } catch (err) {
@@ -366,34 +446,25 @@
       }
     });
 
-    // Load on hash changes (e.g., user pastes a different link)
-    window.addEventListener('hashchange', () => {
-      const fromHash = decodeStateFromHash();
-      if (fromHash) {
-        appState = ensureValidState(fromHash);
-        saveLocal(appState);
-        render();
-      }
+    joinTeamBtn.addEventListener('click', () => {
+      const newId = (teamIdInput.value || '').trim();
+      if (!newId) { alert('Enter a Team ID first.'); return; }
+      location.hash = '#' + newId;
+      // reload to attach new listener
+      location.reload();
     });
 
     // Boot
-    (function init() {
-      // 1) Try URL first (shared link)
-      const fromHash = decodeStateFromHash();
-      if (fromHash) {
-        appState = ensureValidState(fromHash);
-        saveLocal(appState);
-      } else {
-        // 2) Fallback to local (or defaults)
-        appState = loadLocal() || defaultState();
-        // Put state into URL so you can share right away
-        replaceUrlHashFromState(appState);
-      }
+    (async function init() {
+      // Pre-populate Team field from hash
+      teamIdInput.value = CLOUD.teamId;
+      // Start in local (so UI appears immediately), then attempt cloud
+      appState = loadLocal() || defaultState();
       render();
 
-      // Small note about URL length (practical safety)
-      // Fragments (#...) aren't sent to servers and can be large in modern browsers.
-      // If your link ever becomes too long to handle comfortably, use Export/Import JSON.
+      await initCloudIfConfigured();
+      // If using cloud but no snapshot yet, attachListener will render on first snap.
+      // Otherwise, we already rendered local and will keep it until cloud connects.
     })();
   </script>
 </body>
