@@ -412,3 +412,122 @@
         input.className='name-edit';
         input.setAttribute('aria-label','Name');
         input.disabled = !isEditing;
+        input.addEventListener('input', () => {
+          if (!isEditing) return;
+          editBuffer[person.id].name = input.value || 'Unnamed';
+        });
+        th.appendChild(input); tr.appendChild(th);
+
+        // Day cells
+        for (const d of DAYS) {
+          const td = document.createElement('td');
+          td.appendChild(renderDayCell(person.id, d));
+          tr.appendChild(td);
+        }
+
+        // Actions
+        const tdActions = document.createElement('td'); tdActions.className='row-actions';
+
+        if (!isEditing) {
+          const editBtn = document.createElement('button');
+          editBtn.className='btn btn-small';
+          editBtn.textContent='Edit';
+          editBtn.title='Enable editing for this row';
+          editBtn.addEventListener('click', () => startEdit(person));
+
+          const delBtn = document.createElement('button');
+          delBtn.className='btn btn-small btn-danger';
+          delBtn.textContent='Remove';
+          delBtn.title='Remove this person';
+          delBtn.addEventListener('click', () => {
+            if (appState.people.length <= 1) { alert('At least one person must remain.'); return; }
+            appState.people = appState.people.filter(x => x.id !== person.id);
+            setState(appState);
+          });
+
+          tdActions.appendChild(editBtn);
+          tdActions.appendChild(delBtn);
+        } else {
+          const submitBtn = document.createElement('button');
+          submitBtn.className='btn btn-small btn-primary';
+          submitBtn.textContent='Submit';
+          submitBtn.title='Save changes to cloud';
+          submitBtn.addEventListener('click', () => submitEdit(person.id));
+
+          const discardBtn = document.createElement('button');
+          discardBtn.className='btn btn-small btn-outline';
+          discardBtn.textContent='Discard';
+          discardBtn.title='Discard changes and restore previous values';
+          discardBtn.addEventListener('click', () => discardEdit(person.id));
+
+          tdActions.appendChild(submitBtn);
+          tdActions.appendChild(discardBtn);
+        }
+
+        tr.appendChild(tdActions);
+        tbody.appendChild(tr);
+      }
+      updateCounts();
+    }
+
+    // Toolbar events
+    addBtn.addEventListener('click', () => {
+      appState.people.length + 1}`));
+      setState(appState);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (!confirm('Clear all WFH/WFO selections for this week?')) return;
+      for (const p of appState.people) for (const d of DAYS) p.days[d] = '';
+      setState(appState);
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(getState(), null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `location_calendar_${CLOUD.teamId}.json`; a.click(); URL.revokeObjectURL(url);
+    });
+
+    importInput.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0]; if (!file) return;
+      try {
+        const text = await file.text();
+        const json = JSON.parse(text);
+        if (!json || !Array.isArray(json.people)) throw new Error('Invalid file format');
+        json.people = json.people.map(p => ({
+          id: p.id || uid(),
+          name: (p.name || 'Unnamed').toString().slice(0,80),
+          days: {
+            mon: (p.days?.mon === 'WFH' || p.days?.mon === 'WFO') ? p.days.mon : '',
+            tue: (p.days?.tue === 'WFH' || p.days?.tue === 'WFO') ? p.days.tue : '',
+            wed: (p.days?.wed === 'WFH' || p.days?.wed === 'WFO') ? p.days.wed : '',
+            thu: (p.days?.thu === 'WFH' || p.days?.thu === 'WFO') ? p.days.thu : '',
+            fri: (p.days?.fri === 'WFH' || p.days?.fri === 'WFO') ? p.days.fri : '',
+          }
+        }));
+        setState(json);
+        importInput.value = '';
+      } catch (err) {
+        console.error(err);
+        alert('Failed to import. Ensure the file is a JSON exported from this tool.');
+      }
+    });
+
+    joinTeamBtn.addEventListener('click', () => {
+      const newId = (teamIdInput.value || '').trim();
+      if (!newId) { alert('Enter a Team ID first.'); return; }
+      location.hash = '#' + newId;
+      location.reload();
+    });
+
+    // Boot
+    (async function init() {
+      teamIdInput.value = CLOUD.teamId;
+      appState = loadLocal() || defaultState();
+      render();
+
+      await initCloudIfConfigured();
+    })();
+  </script>
+</body>
+</html>
