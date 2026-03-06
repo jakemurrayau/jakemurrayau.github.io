@@ -120,8 +120,7 @@
 
       <div class="footer-actions">
         <div class="subtle">
-          Cloud sync is automatic when configured. Use Export/Import for backups. Share your Team ID link:
-          <span class="kbd">…/index.html#&lt;team-id&gt;</span>
+          Cloud sync is automatic when configured. Use Export/Import for backups.
         </div>
       </div>
     </div>
@@ -329,18 +328,6 @@
 
       toggle.appendChild(btnWFH); toggle.appendChild(btnWFO);
       wrap.appendChild(toggle);
-
-      const note = document.createElement('span'); note.className='chip';
-      const syncNote = () => {
-        const v = getState().people.find(p => p.id === personId).days[day];
-        note.textContent = v || '—';
-        note.style.borderColor = v === 'WFH' ? 'rgba(20,184,166,.5)' : (v === 'WFO' ? 'rgba(139,92,246,.5)' : 'var(--border)');
-        refreshActive(v);
-      };
-      syncNote();
-      btnWFH.addEventListener('click', syncNote);
-      btnWFO.addEventListener('click', syncNote);
-      wrap.appendChild(note);
       return wrap;
     }
 
@@ -368,18 +355,38 @@
 
         // Actions
         const tdActions = document.createElement('td'); tdActions.className='row-actions';
-        const dupBtn = document.createElement('button'); dupBtn.className='btn btn-small'; dupBtn.textContent='Duplicate';
-        dupBtn.addEventListener('click', () => {
+        // COPY (📄) icon button
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'btn btn-small';
+        copyBtn.innerHTML = '📄';   // Word-style copy icon
+        copyBtn.title = 'Copy person row';
+
+        copyBtn.addEventListener('click', () => {
           const idx = appState.people.findIndex(x => x.id === person.id);
-          const clone = JSON.parse(JSON.stringify(person)); clone.id = uid(); clone.name = person.name + ' (copy)';
-          appState.people.splice(idx+1, 0, clone); setState(appState);
+          const clone = JSON.parse(JSON.stringify(person));
+          clone.id = uid();
+          clone.name = person.name + ' (copy)';
+          appState.people.splice(idx + 1, 0, clone);
+          setState(appState);
         });
-        const delBtn = document.createElement('button'); delBtn.className='btn btn-small btn-danger'; delBtn.textContent='Remove';
+
+        // DELETE (✖) icon button
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-small btn-danger';
+        delBtn.innerHTML = '✖';  // X delete icon
+        delBtn.title = 'Delete person row';
+
         delBtn.addEventListener('click', () => {
-          if (appState.people.length <= 1) { alert('At least one person must remain.'); return; }
-          appState.people = appState.people.filter(x => x.id !== person.id); setState(appState);
+          if (appState.people.length <= 1) {
+            alert('At least one person must remain.');
+            return;
+          }
+          appState.people = appState.people.filter(x => x.id !== person.id);
+          setState(appState);
         });
-        tdActions.appendChild(dupBtn); tdActions.appendChild(delBtn); tr.appendChild(tdActions);
+
+        tdActions.appendChild(copyBtn);
+        tdActions.appendChild(delBtn); tr.appendChild(tdActions);
 
         tbody.appendChild(tr);
       }
