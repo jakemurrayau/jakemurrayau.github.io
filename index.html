@@ -52,7 +52,12 @@
     thead th:last-child { border-top-right-radius:var(--radius); }
     tbody td, tbody th { padding:10px; border-bottom:1px solid var(--border); vertical-align:middle; }
     tbody tr:last-child td, tbody tr:last-child th { border-bottom:none; }
-    tbody th.name { width:500px; }
+    tbody th.name {
+      width: 400px;          /* desktop width */
+      min-width: 250px;      /* mobile safe width */
+      white-space: nowrap;   /* prevents wrapping short names */
+      flex-shrink: 0;        /* prevents column from shrinking */
+    }
     .name-edit { width:100%; background:#0a0f1d; border:1px solid var(--border); border-radius:10px; padding:8px 10px; color:var(--text); font-weight:600; outline:none; }
     .cell { display:flex; align-items:center; gap:8px; }
     .toggle { display:inline-flex; align-items:center; gap:8px; background:#0a0f1d; border:1px solid var(--border); border-radius:999px; padding:6px 8px; position:relative; }
