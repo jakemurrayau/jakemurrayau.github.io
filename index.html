@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -74,7 +73,6 @@
   </style>
 </head>
 <body>
-  
   <div class="wrap">
     <header>
       <div class="title">
@@ -148,14 +146,15 @@
         apiKey: "AIzaSyB1LHfa9-tRSDnqxw6UivMsHd44xMsTbSA",
         authDomain: "testgithubslc.firebaseapp.com",
         projectId: "testgithubslc",
-        storageBucket: "testgithubslc.firebasestorage.app",
+        storageBucket: "testgithubslc.firebasestorage.app",  // kept as requested
         messagingSenderId: "330616354613",
         appId: "1:330616354613:web:596bf699be9c8e89ffbe7c",
         measurementId: "G-5SJCM47553"
-      
+      }, // ← important comma
+
       // Team ID is taken from URL hash (#team-id). If none, 'default'
       teamId: (location.hash || "#default").slice(1)
-    },
+    };
 
     /***********************
      * APP STATE
