@@ -1,0 +1,467 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Team Location Calendar (Cloud-Enabled)</title>
+  <style>
+    :root {
+      --bg:#0f172a; --panel:#111827; --panel-2:#0b1220; --text:#e5e7eb; --muted:#9ca3af;
+      --accent:#38bdf8; --wfh:#14b8a6; --wfo:#8b5cf6; --warn:#f59e0b; --danger:#ef4444;
+      --ok:#22c55e; --border:#1f2937; --radius:14px; --shadow:0 8px 24px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    html,body { height:100%; margin:0; background:linear-gradient(180deg,var(--bg),#0b1020 40%,#05070e); color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; }
+    .wrap { max-width:1100px; margin:28px auto 80px; padding:0 16px; }
+    header { display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px; margin-bottom:16px; }
+    .title { font-size:1.4rem; font-weight:700; letter-spacing:.2px; display:flex; align-items:center; gap:10px; }
+    .badge { font-size:.78rem; padding:4px 8px; border-radius:999px; background:linear-gradient(90deg,rgba(56,189,248,.15),rgba(139,92,246,.15));
+      border:1px solid var(--border); color:var(--muted); }
+    .toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-left:auto; }
+    button, .btn {
+      appearance:none; border:1px solid var(--border); color:var(--text);
+      background:linear-gradient(180deg,#0f172a,#0b1220); padding:10px 12px; border-radius:10px; cursor:pointer;
+      transition:transform .06s ease, background .2s ease, border-color .2s ease; box-shadow:var(--shadow); font-weight:600; font-size:.95rem;
+    }
+    button:hover { transform:translateY(-1px); border-color:#263247; }
+    .btn-primary { background:linear-gradient(180deg,#0c4a6e,#0b3b59); border-color:#0b4a71; }
+    .btn-danger { background:linear-gradient(180deg,#4c0b0e,#33060a); border-color:#5b1116; }
+    .btn-outline { background:transparent; }
+    .btn-small { padding:6px 10px; font-size:.86rem; }
+    .panel { background:linear-gradient(180deg,var(--panel),var(--panel-2)); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+
+    .legend { display:flex; align-items:center; gap:12px; padding:14px; border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg,rgba(56,189,248,.06),rgba(139,92,246,.06)); }
+    .pill { display:inline-flex; align-items:center; gap:8px; font-size:.9rem; color:var(--muted); }
+    .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .dot.wfh { background:var(--wfh); box-shadow:0 0 10px rgba(20,184,166,.6); }
+    .dot.wfo { background:var(--wfo); box-shadow:0 0 10px rgba(139,92,246,.6); }
+
+    .cloud { width:100%; padding:10px 12px; border:1px solid var(--border);
+      background:rgba(56,189,248,.08); color:var(--muted); border-radius:10px; }
+    .cloud.ok { background:rgba(34,197,94,.08); }
+    .cloud.warn { background:rgba(245,158,11,.08); }
+    .cloud.err { background:rgba(239,68,68,.08); }
+
+    .table-wrap { width:100%; overflow-x:auto; }
+    table { width:100%; border-collapse:separate; border-spacing:0; }
+    thead th { position:sticky; top:0; z-index:1; background:#0d1324; border-bottom:1px solid var(--border); padding:14px 10px;
+      font-weight:700; text-align:left; white-space:nowrap; }
+    thead th:first-child { border-top-left-radius:var(--radius); }
+    thead th:last-child { border-top-right-radius:var(--radius); }
+    tbody td, tbody th { padding:10px; border-bottom:1px solid var(--border); vertical-align:middle; }
+    tbody tr:last-child td, tbody tr:last-child th { border-bottom:none; }
+    tbody th.name { width:220px; }
+    .name-edit { width:100%; background:#0a0f1d; border:1px solid var(--border); border-radius:10px; padding:8px 10px; color:var(--text); font-weight:600; outline:none; }
+    .cell { display:flex; align-items:center; gap:8px; }
+    .toggle { display:inline-flex; align-items:center; gap:8px; background:#0a0f1d; border:1px solid var(--border); border-radius:999px; padding:6px 8px; position:relative; }
+    .toggle button { border-radius:999px; padding:6px 10px; font-size:.85rem; border:none; background:transparent; box-shadow:none; }
+    .toggle button.active { background:#071022; border:1px solid #1a2840; }
+    .toggle .opt-wfh.active { color:var(--wfh); } .toggle .opt-wfo.active { color:var(--wfo); }
+    .chip { font-size:.78rem; border:1px dashed var(--border); border-radius:999px; padding:2px 8px; color:var(--muted); }
+    .count { font-size:.85rem; color:var(--muted); } .count b { color:var(--text); }
+    .row-actions { display:flex; gap:6px; }
+    .footer-actions { display:flex; flex-wrap:wrap; gap:10px; padding:14px; border-top:1px solid var(--border);
+      background:linear-gradient(180deg,rgba(16,185,129,.06),rgba(59,130,246,.06)); }
+    .subtle { color:var(--muted); font-size:.9rem; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:.8rem; background:#0b1020; border:1px solid var(--border); border-bottom-width:3px; border-radius:6px; padding:2px 6px; color:var(--muted); }
+    .field { display:flex; align-items:center; gap:6px; background:#0a0f1d; border:1px solid var(--border); border-radius:10px; padding:6px 8px; }
+    .field input { background:transparent; border:none; color:var(--text); outline:none; font-weight:600; }
+    @media (max-width: 720px) { .title { width:100%; } .toolbar { width:100%; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        📅 Team Location (Mon–Fri)
+        <span id="cloudBadge" class="badge">Cloud: checking…</span>
+      </div>
+      <div class="toolbar">
+        <div class="field" title="Set a shared Team ID and share the URL">
+          <span>Team:</span>
+          <input id="teamId" placeholder="e.g., brisbane-team" />
+          <button id="joinTeam" class="btn btn-outline btn-small">Join</button>
+        </div>
+        <button id="addPerson" class="btn btn-primary" title="Add a new person">＋ Add Person</button>
+        <button id="resetWeek" class="btn btn-outline" title="Clear all selections">Reset Week</button>
+        <button id="exportData" class="btn btn-outline" title="Download JSON">Export</button>
+        <label for="importFile" class="btn btn-outline" title="Import JSON">Import</label>
+        <input id="importFile" type="file" accept="application/json" style="display:none" />
+      </div>
+      <div id="cloudMsg" class="cloud warn" style="display:none"></div>
+    </header>
+
+    <div class="panel">
+      <div class="legend">
+        <span class="pill"><span class="dot wfh"></span> WFH</span>
+        <span class="pill"><span class="dot wfo"></span> WFO</span>
+        <span class="pill subtle">Tip: Click a name to edit. Use <span class="kbd">Tab</span> to move across cells.</span>
+      </div>
+
+      <div class="table-wrap">
+        <table id="calendar">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Monday <span class="count" id="count-mon"></span></th>
+              <th scope="col">Tuesday <span class="count" id="count-tue"></span></th>
+              <th scope="col">Wednesday <span class="count" id="count-wed"></span></th>
+              <th scope="col">Thursday <span class="count" id="count-thu"></span></th>
+              <th scope="col">Friday <span class="count" id="count-fri"></span></th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="footer-actions">
+        <div class="subtle">
+          Cloud sync is automatic when configured. Use Export/Import for backups. Share your Team ID link:
+          <span class="kbd">…/index.html#&lt;team-id&gt;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase CDN (compat builds for simplicity).
+       Tip: If these versions 404 in the future, bump the version number to the latest 10.x. -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    /***********************
+     * CONFIGURE CLOUD HERE
+     ***********************/
+    const CLOUD = {
+      enabled: true, // set false to force local-only mode
+      // TODO: Replace with your Firebase project config (from Firebase Console > Project settings)
+      firebaseConfig: {
+        apiKey: "",
+        authDomain: "",
+        projectId: "",
+        appId: ""
+      },
+      // Team ID is taken from URL hash (#team-id). If none, 'default'
+      teamId: (location.hash || "#default").slice(1)
+    };
+
+    /***********************
+     * APP STATE
+     ***********************/
+    const STORAGE_KEY = 'location_calendar_v2';
+    const DAYS = ['mon','tue','wed','thu','fri'];
+    const tbody = document.getElementById('tbody');
+    const addBtn = document.getElementById('addPerson');
+    const resetBtn = document.getElementById('resetWeek');
+    const exportBtn = document.getElementById('exportData');
+    const importInput = document.getElementById('importFile');
+    const teamIdInput = document.getElementById('teamId');
+    const joinTeamBtn = document.getElementById('joinTeam');
+    const cloudBadge = document.getElementById('cloudBadge');
+    const cloudMsg = document.getElementById('cloudMsg');
+
+    let appState = null;
+    let usingCloud = false;
+    let auth = null, db = null, docRef = null, unsubSnap = null;
+
+    function uid() { return 'p_' + Math.random().toString(36).slice(2,9); }
+    function defaultPerson(name='New Person') {
+      return { id: uid(), name, days: { mon:'',tue:'',wed:'',thu:'',fri:'' } };
+    }
+    function defaultState() {
+      return { people: [ defaultPerson('Person 1'), defaultPerson('Person 2'), defaultPerson('Person 3') ] };
+    }
+
+    function setCloudStatus(kind, msg='') {
+      // kind: 'checking' | 'ok' | 'warn' | 'err' | 'local'
+      const badges = {
+        checking: { text: 'Cloud: checking…', cls:'' },
+        ok: { text: 'Cloud: connected', cls:'ok' },
+        local: { text: 'Cloud: local mode', cls:'' },
+        warn: { text: 'Cloud: limited', cls:'warn' },
+        err: { text: 'Cloud: error', cls:'err' },
+      };
+      const b = badges[kind] || badges.warn;
+      cloudBadge.textContent = b.text;
+      cloudMsg.style.display = msg ? 'block' : 'none';
+      cloudMsg.className = 'cloud ' + (b.cls || '');
+      cloudMsg.innerHTML = msg || '';
+    }
+
+    function saveLocal(data) {
+      localStorage.setItem(STORAGE_KEY + ':' + CLOUD.teamId, JSON.stringify(data));
+    }
+    function loadLocal() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY + ':' + CLOUD.teamId);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.people)) return parsed;
+        return null;
+      } catch { return null; }
+    }
+
+    async function initCloudIfConfigured() {
+      if (!CLOUD.enabled) {
+        usingCloud = false;
+        setCloudStatus('local', `
+          <strong>Cloud not enabled.</strong> You're in local-only mode (this browser only).
+          Add your Firebase config in the script to enable cloud sync. You can still Export/Import JSON.
+        `);
+        return;
+      }
+      const cfg = CLOUD.firebaseConfig || {};
+      const cfgComplete = cfg.apiKey && cfg.projectId && cfg.appId;
+      if (!cfgComplete) {
+        usingCloud = false;
+        setCloudStatus('local', `
+          <strong>Cloud not configured.</strong> Fill in your Firebase config in the script
+          (apiKey, authDomain, projectId, appId). Until then, data is stored locally.
+        `);
+        return;
+      }
+
+      try {
+        setCloudStatus('checking');
+        const app = firebase.initializeApp(cfg);
+        auth = firebase.auth();
+        // Anonymous sign-in keeps it simple; you can switch to Google sign-in later.
+        await auth.signInAnonymously();
+        db = firebase.firestore();
+        // Optional: offline cache; Firestore will sync once online.
+        try { await db.enablePersistence(); } catch (_) {}
+        usingCloud = true;
+        setCloudStatus('ok', `
+          <strong>Cloud connected.</strong> Team ID: <code>${CLOUD.teamId}</code>.
+          Share this link: <code>${location.href.split('#')[0]}#${CLOUD.teamId}</code>
+        `);
+        attachListener(CLOUD.teamId);
+      } catch (e) {
+        console.warn('Cloud init failed:', e);
+        usingCloud = false;
+        setCloudStatus('err', `
+          <strong>Cloud error.</strong> Falling back to local-only mode.<br/>
+          Check Firebase config and Firestore/Authentication settings in the Firebase Console.
+        `);
+      }
+    }
+
+    function attachListener(teamId) {
+      if (!db) return;
+      if (unsubSnap) { try { unsubSnap(); } catch(_) {} }
+      docRef = db.collection('teams').doc(teamId);
+      unsubSnap = docRef.onSnapshot(async (snap) => {
+        if (snap.exists) {
+          const data = snap.data();
+          if (data && Array.isArray(data.people)) {
+            appState = data;
+            render();
+            return;
+          }
+        }
+        // no data yet: initialize with default
+        appState = defaultState();
+        await docRef.set(appState, { merge: true });
+        render();
+      }, (err) => {
+        console.error('Snapshot error', err);
+        setCloudStatus('err', 'Realtime updates unavailable. You can continue; changes will try to sync.');
+        if (!appState) { appState = loadLocal() || defaultState(); render(); }
+      });
+    }
+
+    async function saveState() {
+      if (usingCloud && docRef) {
+        try {
+          await docRef.set({ ...appState, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+        } catch (e) {
+          console.warn('Cloud save failed; keeping local backup', e);
+          saveLocal(appState);
+          setCloudStatus('warn', 'Cloud save failed (network or rules). Your latest changes are cached locally and will retry.');
+        }
+      } else {
+        saveLocal(appState);
+      }
+    }
+
+    function getState() {
+      return appState;
+    }
+    function setState(newData) {
+      appState = newData;
+      saveState();
+      render();
+    }
+
+    function updateCounts() {
+      const data = getState();
+      const counts = { mon:{WFH:0,WFO:0}, tue:{WFH:0,WFO:0}, wed:{WFH:0,WFO:0}, thu:{WFH:0,WFO:0}, fri:{WFH:0,WFO:0} };
+      for (const p of data.people) {
+        for (const d of DAYS) {
+          const v = p.days[d];
+          if (v === 'WFH' || v === 'WFO') counts[d][v]++;
+        }
+      }
+      for (const d of DAYS) {
+        const el = document.getElementById('count-' + d);
+        if (!el) continue;
+        const wfh = counts[d].WFH, wfo = counts[d].WFO;
+        el.innerHTML = ` – <b>${wfh}</b> WFH / <b>${wfo}</b> WFO`;
+      }
+    }
+
+    function makeDayToggle(personId, day, value) {
+      const wrap = document.createElement('div'); wrap.className = 'cell';
+      const toggle = document.createElement('div'); toggle.className = 'toggle';
+      const btnWFH = document.createElement('button'); btnWFH.type='button'; btnWFH.className='opt-wfh'; btnWFH.textContent='WFH';
+      const btnWFO = document.createElement('button'); btnWFO.type='button'; btnWFO.className='opt-wfo'; btnWFO.textContent='WFO';
+
+      function refreshActive(v) {
+        btnWFH.classList.toggle('active', v === 'WFH'); btnWFH.setAttribute('aria-pressed', v==='WFH');
+        btnWFO.classList.toggle('active', v === 'WFO'); btnWFO.setAttribute('aria-pressed', v==='WFO');
+      }
+      refreshActive(value);
+
+      const onClick = (sel) => {
+        const data = getState();
+        const person = data.people.find(p => p.id === personId);
+        person.days[day] = (person.days[day] === sel) ? '' : sel;
+        setState(data);
+      };
+
+      btnWFH.addEventListener('click', () => onClick('WFH'));
+      btnWFO.addEventListener('click', () => onClick('WFO'));
+
+      toggle.appendChild(btnWFH); toggle.appendChild(btnWFO);
+      wrap.appendChild(toggle);
+
+      const note = document.createElement('span'); note.className='chip';
+      const syncNote = () => {
+        const v = getState().people.find(p => p.id === personId).days[day];
+        note.textContent = v || '—';
+        note.style.borderColor = v === 'WFH' ? 'rgba(20,184,166,.5)' : (v === 'WFO' ? 'rgba(139,92,246,.5)' : 'var(--border)');
+        refreshActive(v);
+        updateCounts();
+      };
+      syncNote();
+      btnWFH.addEventListener('click', syncNote);
+      btnWFO.addEventListener('click', syncNote);
+      wrap.appendChild(note);
+      return wrap;
+    }
+
+    function render() {
+      if (!appState) return;
+      tbody.innerHTML = '';
+      for (const person of appState.people) {
+        const tr = document.createElement('tr');
+
+        // Name
+        const th = document.createElement('th'); th.scope='row'; th.className='name';
+        const input = document.createElement('input'); input.value = person.name; input.className='name-edit'; input.setAttribute('aria-label','Name');
+        input.addEventListener('change', () => {
+          person.name = input.value || 'Unnamed';
+          saveState();
+        });
+        th.appendChild(input); tr.appendChild(th);
+
+        // Day cells
+        for (const d of DAYS) {
+          const td = document.createElement('td');
+          td.appendChild(makeDayToggle(person.id, d, person.days[d]));
+          tr.appendChild(td);
+        }
+
+        // Actions
+        const tdActions = document.createElement('td'); tdActions.className='row-actions';
+        const dupBtn = document.createElement('button'); dupBtn.className='btn btn-small'; dupBtn.textContent='Duplicate';
+        dupBtn.addEventListener('click', () => {
+          const idx = appState.people.findIndex(x => x.id === person.id);
+          const clone = JSON.parse(JSON.stringify(person)); clone.id = uid(); clone.name = person.name + ' (copy)';
+          appState.people.splice(idx+1, 0, clone); setState(appState);
+        });
+        const delBtn = document.createElement('button'); delBtn.className='btn btn-small btn-danger'; delBtn.textContent='Remove';
+        delBtn.addEventListener('click', () => {
+          if (appState.people.length <= 1) { alert('At least one person must remain.'); return; }
+          appState.people = appState.people.filter(x => x.id !== person.id); setState(appState);
+        });
+        tdActions.appendChild(dupBtn); tdActions.appendChild(delBtn); tr.appendChild(tdActions);
+
+        tbody.appendChild(tr);
+      }
+      updateCounts();
+    }
+
+    // Toolbar events
+    addBtn.addEventListener('click', () => {
+      appState.people.push(defaultPerson(`Person ${appState.people.length + 1}`));
+      setState(appState);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (!confirm('Clear all WFH/WFO selections for this week?')) return;
+      for (const p of appState.people) for (const d of DAYS) p.days[d] = '';
+      setState(appState);
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(getState(), null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `location_calendar_${CLOUD.teamId}.json`; a.click(); URL.revokeObjectURL(url);
+    });
+
+    importInput.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0]; if (!file) return;
+      try {
+        const text = await file.text();
+        const json = JSON.parse(text);
+        if (!json || !Array.isArray(json.people)) throw new Error('Invalid file format');
+        // sanitize
+        json.people = json.people.map(p => ({
+          id: p.id || uid(),
+          name: (p.name || 'Unnamed').toString().slice(0,80),
+          days: {
+            mon: (p.days?.mon === 'WFH' || p.days?.mon === 'WFO') ? p.days.mon : '',
+            tue: (p.days?.tue === 'WFH' || p.days?.tue === 'WFO') ? p.days.tue : '',
+            wed: (p.days?.wed === 'WFH' || p.days?.wed === 'WFO') ? p.days.wed : '',
+            thu: (p.days?.thu === 'WFH' || p.days?.thu === 'WFO') ? p.days.thu : '',
+            fri: (p.days?.fri === 'WFH' || p.days?.fri === 'WFO') ? p.days.fri : '',
+          }
+        }));
+        setState(json);
+        importInput.value = '';
+      } catch (err) {
+        console.error(err);
+        alert('Failed to import. Ensure the file is a JSON exported from this tool.');
+      }
+    });
+
+    joinTeamBtn.addEventListener('click', () => {
+      const newId = (teamIdInput.value || '').trim();
+      if (!newId) { alert('Enter a Team ID first.'); return; }
+      location.hash = '#' + newId;
+      // reload to attach new listener
+      location.reload();
+    });
+
+    // Boot
+    (async function init() {
+      // Pre-populate Team field from hash
+      teamIdInput.value = CLOUD.teamId;
+      // Start in local (so UI appears immediately), then attempt cloud
+      appState = loadLocal() || defaultState();
+      render();
+
+      await initCloudIfConfigured();
+      // If using cloud but no snapshot yet, attachListener will render on first snap.
+      // Otherwise, we already rendered local and will keep it until cloud connects.
+    })();
+  </script>
+</body>
+</html>
